@@ -1,0 +1,10 @@
+# Backend
+node_modules/
+uploads/
+.env
+*.pdf
+*.aux
+*.log
+*.out
+*.synctex.gz
+/tmp/

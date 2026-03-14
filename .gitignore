@@ -1,0 +1,21 @@
+# Common
+node_modules/
+.DS_Store
+*.log
+.env
+.env.local
+
+# Backend
+backend/uploads/
+backend/*.pdf
+backend/*.aux
+backend/*.log
+backend/*.out
+backend/*.synctex.gz
+backend/tmp/
+
+# Frontend
+frontend/dist/
+frontend/node_modules/
+frontend/.env
+frontend/.env.local

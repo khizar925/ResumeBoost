@@ -126,19 +126,29 @@ function compileTex(texContent) {
     fs.writeFileSync(texFile, texContent, 'utf8');
 
     // Run pdflatex twice to resolve references
+    const pdflatexBin = process.env.PDFLATEX_PATH || 'pdflatex';
     const runPdflatex = (callback) => {
       execFile(
-        'pdflatex',
+        pdflatexBin,
         ['-interaction=nonstopmode', '-output-directory', tmpDir, texFile],
-        { timeout: 60000, cwd: tmpDir, shell: true },
+        { timeout: 180000, cwd: tmpDir, shell: true },
         callback
       );
     };
 
     runPdflatex((err1, stdout1, stderr1) => {
       if (err1 && !fs.existsSync(pdfFile)) {
+        const logFile = path.join(tmpDir, 'resume.log');
+        let logOutput = '(no log file)';
+        if (fs.existsSync(logFile)) {
+          const lines = fs.readFileSync(logFile, 'utf8').split('\n');
+          const errorLines = lines.filter(l => l.startsWith('!') || l.includes('Error') || l.includes('error'));
+          logOutput = errorLines.length > 0
+            ? errorLines.join('\n')
+            : lines.slice(-60).join('\n');
+        }
         cleanupDir(tmpDir);
-        console.error('[LaTeX] First run failed:\nSTDOUT:', stdout1, '\nSTDERR:', stderr1, '\nERR:', err1?.message);
+        console.error('[LaTeX] First run failed:\nERR:', err1?.message, '\nLATEX ERRORS:\n', logOutput);
         return reject(Object.assign(
           new Error('PDF compilation failed. Check LaTeX content.'),
           { status: 500 }

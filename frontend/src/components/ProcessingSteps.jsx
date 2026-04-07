@@ -1,101 +1,143 @@
 import { useEffect, useState } from 'react'
 
 const STEPS = [
-    { id: 'upload', label: 'Uploading Resume', icon: '📤', description: 'Extracting text from your PDF…' },
-    { id: 'optimize', label: 'AI Optimization', icon: '🤖', description: 'Gemini is rewriting with XYZ method…' },
-    { id: 'compile', label: 'Compiling PDF', icon: '📄', description: 'Running LaTeX to generate your resume…' },
+    { id: 'upload',   label: 'Uploading resume',  description: 'Extracting text from your PDF'            },
+    { id: 'optimize', label: 'AI optimization',   description: 'Rewriting bullets with the XYZ method'    },
+    { id: 'compile',  label: 'Compiling PDF',      description: 'Typesetting your resume with LaTeX'       },
 ]
 
+/* ── SVG Icons ───────────────────────────────────────────────── */
+const CheckIcon = () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <polyline points="20 6 9 17 4 12" />
+    </svg>
+)
+
+const LoaderIcon = () => (
+    <svg className="anim-spin" width="14" height="14" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </svg>
+)
+
+/* ── Component ───────────────────────────────────────────────── */
 export default function ProcessingSteps({ currentStep }) {
     const [visibleSteps, setVisibleSteps] = useState([])
 
     useEffect(() => {
-        // Stagger step reveal animation
         STEPS.forEach((step, i) => {
             setTimeout(() => {
                 setVisibleSteps(prev => [...prev, step.id])
-            }, i * 200)
+            }, i * 160)
         })
     }, [])
 
     const currentIdx = STEPS.findIndex(s => s.id === currentStep)
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0.5rem 0' }}>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textAlign: 'center' }}>
-                This usually takes 20–40 seconds
-            </p>
+        <div role="list" aria-label="Processing steps">
             {STEPS.map((step, i) => {
-                const isDone = i < currentIdx
-                const isActive = i === currentIdx
-                const isPending = i > currentIdx
+                const isDone    = i < currentIdx
+                const isActive  = i === currentIdx
                 const isVisible = visibleSteps.includes(step.id)
 
                 return (
                     <div
                         key={step.id}
-                        className="glass-card"
+                        role="listitem"
+                        aria-current={isActive ? 'step' : undefined}
                         style={{
-                            padding: '1rem 1.25rem',
                             display: 'flex',
-                            alignItems: 'center',
                             gap: '1rem',
-                            opacity: isVisible ? 1 : 0,
-                            transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-                            transition: 'opacity 0.4s ease, transform 0.4s ease, border-color 0.3s, box-shadow 0.3s',
-                            borderColor: isActive ? 'rgba(139,92,246,0.4)' : isDone ? 'rgba(16,185,129,0.3)' : 'var(--border)',
-                            boxShadow: isActive ? '0 0 20px rgba(139,92,246,0.15)' : 'none',
+                            alignItems: 'flex-start',
+                            opacity:   isVisible ? 1 : 0,
+                            transform: isVisible ? 'translateX(0)' : 'translateX(-10px)',
+                            transition: 'opacity 0.35s ease, transform 0.35s ease',
+                            paddingBottom: i < STEPS.length - 1 ? '0' : '0',
+                            position: 'relative',
+                            marginBottom: i < STEPS.length - 1 ? '1.5rem' : 0,
                         }}
                     >
-                        {/* Step icon / spinner / check */}
-                        <div style={{
-                            width: 40, height: 40,
-                            borderRadius: '50%',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: '1.2rem',
-                            background: isDone
-                                ? 'rgba(16,185,129,0.15)'
-                                : isActive
-                                    ? 'rgba(139,92,246,0.15)'
-                                    : 'rgba(255,255,255,0.04)',
-                            border: `1.5px solid ${isDone ? 'rgba(16,185,129,0.4)' : isActive ? 'rgba(139,92,246,0.4)' : 'var(--border)'}`,
-                            flexShrink: 0,
-                            transition: 'all 0.3s ease',
-                        }}>
+                        {/* Connecting line between steps */}
+                        {i < STEPS.length - 1 && (
+                            <div style={{
+                                position: 'absolute',
+                                left: '18px',
+                                top: '38px',
+                                height: 'calc(1.5rem + 1px)',
+                                width: '2px',
+                                background: isDone ? 'var(--accent)' : 'var(--border)',
+                                transition: 'background 0.5s ease',
+                            }} aria-hidden="true" />
+                        )}
+
+                        {/* Step indicator circle */}
+                        <div
+                            aria-hidden="true"
+                            style={{
+                                width: 36,
+                                height: 36,
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexShrink: 0,
+                                border: `2px solid ${isDone ? 'var(--accent)' : isActive ? 'var(--accent)' : 'var(--border)'}`,
+                                background: isDone
+                                    ? 'var(--accent)'
+                                    : isActive
+                                    ? 'var(--bg-accent-light)'
+                                    : 'var(--bg-muted)',
+                                color: isDone
+                                    ? '#fff'
+                                    : isActive
+                                    ? 'var(--accent)'
+                                    : 'var(--text-muted)',
+                                transition: 'all 0.3s ease',
+                                zIndex: 1,
+                            }}
+                        >
                             {isDone ? (
-                                <span className="anim-checkmark" style={{ fontSize: '1.1rem' }}>✅</span>
+                                <span className="anim-checkmark"><CheckIcon /></span>
                             ) : isActive ? (
-                                <span className="anim-spin" style={{ display: 'inline-block' }}>{step.icon}</span>
+                                <LoaderIcon />
                             ) : (
-                                <span style={{ opacity: 0.4 }}>{step.icon}</span>
+                                <span style={{
+                                    fontFamily: 'DM Mono, monospace',
+                                    fontSize: '0.7rem',
+                                    fontWeight: 500,
+                                }}>
+                                    {i + 1}
+                                </span>
                             )}
                         </div>
 
-                        {/* Labels */}
-                        <div style={{ flex: 1 }}>
+                        {/* Step text */}
+                        <div style={{ paddingTop: '0.45rem' }}>
                             <div style={{
-                                fontSize: '0.9rem',
+                                fontSize: '0.88rem',
                                 fontWeight: 600,
-                                color: isDone ? 'var(--success)' : isActive ? 'var(--text-primary)' : 'var(--text-muted)',
+                                color: isDone
+                                    ? 'var(--accent)'
+                                    : isActive
+                                    ? 'var(--text-primary)'
+                                    : 'var(--text-muted)',
+                                lineHeight: 1.3,
                                 transition: 'color 0.3s',
                             }}>
                                 {step.label}
                             </div>
-                            {isActive && (
-                                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-                                    {step.description}
-                                </div>
-                            )}
-                            {isDone && (
-                                <div style={{ fontSize: '0.78rem', color: 'var(--success)', marginTop: '0.15rem' }}>
-                                    Complete
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Step number */}
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                            {i + 1}/{STEPS.length}
+                            <div style={{
+                                fontSize: '0.77rem',
+                                color: 'var(--text-muted)',
+                                marginTop: '0.18rem',
+                                opacity: (isActive || isDone) ? 1 : 0,
+                                transition: 'opacity 0.3s',
+                                lineHeight: 1.4,
+                            }}>
+                                {isDone ? 'Complete' : step.description}
+                            </div>
                         </div>
                     </div>
                 )

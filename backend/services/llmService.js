@@ -63,7 +63,7 @@ Output format (strict JSON):
  */
 async function optimizeResume(resumeText, jobDescription) {
   const model = genAI.getGenerativeModel({
-    model: 'gemini-flash-latest',
+    model: 'gemini-1.5-flash',
     systemInstruction: SYSTEM_PROMPT,
   });
 

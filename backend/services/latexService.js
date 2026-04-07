@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { execFile } = require('child_process');
-const { v4: uuidv4 } = require('uuid');
+// const { v4: uuidv4 } = require('uuid');
 
 const TEMPLATE_PATH = path.join(__dirname, '../templates/jakes_resume.tex');
 
@@ -130,7 +130,7 @@ function compileTex(texContent) {
       execFile(
         'pdflatex',
         ['-interaction=nonstopmode', '-output-directory', tmpDir, texFile],
-        { timeout: 30000, cwd: tmpDir },
+        { timeout: 60000, cwd: tmpDir, shell: true },
         callback
       );
     };
@@ -138,7 +138,7 @@ function compileTex(texContent) {
     runPdflatex((err1, stdout1, stderr1) => {
       if (err1 && !fs.existsSync(pdfFile)) {
         cleanupDir(tmpDir);
-        console.error('[LaTeX] First run failed:', stderr1 || stdout1);
+        console.error('[LaTeX] First run failed:\nSTDOUT:', stdout1, '\nSTDERR:', stderr1, '\nERR:', err1?.message);
         return reject(Object.assign(
           new Error('PDF compilation failed. Check LaTeX content.'),
           { status: 500 }
@@ -149,7 +149,7 @@ function compileTex(texContent) {
       runPdflatex((err2, stdout2, stderr2) => {
         if (!fs.existsSync(pdfFile)) {
           cleanupDir(tmpDir);
-          console.error('[LaTeX] Second run failed:', stderr2 || stdout2);
+          console.error('[LaTeX] Second run failed:\nSTDOUT:', stdout2, '\nSTDERR:', stderr2, '\nERR:', err2?.message);
           return reject(Object.assign(
             new Error('PDF compilation failed on second pass.'),
             { status: 500 }

@@ -1,34 +1,34 @@
-/* ResumeBoost — Warm Editorial Design System */
+/* ResumeBoost — Design System */
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=DM+Sans:opsz,wght@9..40,300..700&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
   /* Surfaces */
-  --bg:             #F6F4EF;
-  --bg-surface:     #FEFDFB;
-  --bg-muted:       #EEEbe4;
-  --bg-accent-light:#EBF5EF;
+  --bg:              #F6F4EF;
+  --bg-surface:      #FEFDFB;
+  --bg-muted:        #EEEbe4;
+  --bg-accent-light: #EBF5EF;
 
   /* Borders */
-  --border:         #E2DDD5;
-  --border-strong:  #C9C4BA;
-  --border-focus:   #1F7A56;
+  --border:          #E2DDD5;
+  --border-strong:   #C9C4BA;
+  --border-focus:    #1F7A56;
 
   /* Accent — forest green */
-  --accent:         #1F7A56;
-  --accent-hover:   #176645;
-  --accent-dim:     rgba(31, 122, 86, 0.10);
+  --accent:          #1F7A56;
+  --accent-hover:    #176645;
+  --accent-dim:      rgba(31, 122, 86, 0.10);
 
   /* Text */
-  --text-primary:   #1C1917;
-  --text-secondary: #57534E;
-  --text-muted:     #A8A29E;
+  --text-primary:    #1C1917;
+  --text-secondary:  #57534E;
+  --text-muted:      #A8A29E;
 
   /* Semantic */
-  --success:        #1F7A56;
-  --error:          #B91C1C;
-  --error-bg:       #FEF2F2;
-  --error-border:   #FECACA;
-  --warning:        #D97706;
+  --success:         #1F7A56;
+  --error:           #B91C1C;
+  --error-bg:        #FEF2F2;
+  --error-border:    #FECACA;
+  --warning:         #D97706;
 
   /* Elevation */
   --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
@@ -41,6 +41,17 @@
   --r-md:   12px;
   --r-lg:   16px;
   --r-full: 9999px;
+
+  /* Dark panel palette */
+  --dp-bg:          #0B1A0F;
+  --dp-bg-2:        #0F2115;
+  --dp-text:        #F0EDE6;
+  --dp-text-dim:    rgba(240, 237, 230, 0.58);
+  --dp-text-faint:  rgba(240, 237, 230, 0.28);
+  --dp-border:      rgba(255, 255, 255, 0.07);
+  --dp-mint:        #34D18A;
+  --dp-mint-dim:    rgba(52, 209, 138, 0.12);
+  --dp-gold:        #E8B84B;
 }
 
 *, *::before, *::after {
@@ -54,18 +65,243 @@ html { scroll-behavior: smooth; }
 body {
   font-family: 'DM Sans', sans-serif;
   background-color: var(--bg);
-  /* Subtle dot grid */
-  background-image: radial-gradient(var(--border) 1px, transparent 1px);
-  background-size: 28px 28px;
   color: var(--text-primary);
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
 }
 
-/* ─── Cards ────────────────────────────────────────────── */
+/* ─── Split Layout ─────────────────────────────────────────── */
+.split-root {
+  display: flex;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* ─── Left Panel ───────────────────────────────────────────── */
+.left-panel {
+  position: relative;
+  width: 42%;
+  min-width: 320px;
+  background: var(--dp-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 2.75rem 2.75rem 2.25rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Dot grid texture */
+.left-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(52, 209, 138, 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Radial glow — bottom right */
+.left-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(31,122,86,0.22) 0%, transparent 68%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.lp-top,
+.lp-body,
+.lp-bottom {
+  position: relative;
+  z-index: 1;
+}
+
+.lp-top    { flex-shrink: 0; }
+.lp-bottom { flex-shrink: 0; }
+
+.lp-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 0 1.5rem;
+}
+
+/* Logo */
+.lp-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: var(--dp-text);
+}
+
+/* Eyebrow */
+.lp-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dp-mint);
+  margin-bottom: 1.1rem;
+}
+
+/* Headline */
+.lp-heading {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(1.85rem, 3vw, 2.65rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--dp-text);
+  margin-bottom: 1.15rem;
+}
+
+.lp-heading em {
+  font-style: italic;
+  color: var(--dp-gold);
+}
+
+/* Tagline */
+.lp-tagline {
+  font-size: 0.855rem;
+  color: var(--dp-text-dim);
+  line-height: 1.68;
+  max-width: 330px;
+  margin-bottom: 0;
+}
+
+.lp-tagline strong {
+  color: rgba(240, 237, 230, 0.82);
+  font-weight: 600;
+}
+
+/* Rule divider */
+.lp-rule {
+  width: 36px;
+  height: 1px;
+  background: var(--dp-border);
+  margin: 1.4rem 0;
+  flex-shrink: 0;
+}
+
+/* Feature list */
+.lp-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.lp-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.84rem;
+  color: var(--dp-text-dim);
+  line-height: 1.4;
+}
+
+.lp-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--dp-mint-dim);
+  color: var(--dp-mint);
+  flex-shrink: 0;
+}
+
+/* Bottom credit */
+.lp-bottom {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--dp-text-faint);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* ─── Right Panel ──────────────────────────────────────────── */
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem 3rem 2rem;
+  background: var(--bg);
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 28px 28px;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.rp-header {
+  flex-shrink: 0;
+  margin-bottom: 1.35rem;
+}
+
+.rp-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.45rem;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-top: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+
+.rp-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.rp-error {
+  flex-shrink: 0;
+  margin-bottom: 0.875rem;
+}
+
+.rp-form-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ─── Centered stage (processing / done) ───────────────────── */
+.centered-stage {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: var(--bg);
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.centered-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 2.5rem 2rem;
+}
+
+/* ─── Cards ────────────────────────────────────────────────── */
 .surface-card {
   background: var(--bg-surface);
   border: 1px solid var(--border);
@@ -73,7 +309,7 @@ body {
   box-shadow: var(--shadow-md);
 }
 
-/* ─── Typography helpers ───────────────────────────────── */
+/* ─── Typography helpers ───────────────────────────────────── */
 .display-heading {
   font-family: 'Fraunces', Georgia, serif;
   font-weight: 700;
@@ -90,7 +326,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ─── Buttons ──────────────────────────────────────────── */
+/* ─── Buttons ──────────────────────────────────────────────── */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -151,7 +387,7 @@ body {
   background: var(--accent-dim);
 }
 
-/* ─── Form ─────────────────────────────────────────────── */
+/* ─── Form ─────────────────────────────────────────────────── */
 .field-label {
   display: block;
   font-family: 'DM Mono', 'Courier New', monospace;
@@ -160,7 +396,7 @@ body {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.5rem;
 }
 
 .input-field {
@@ -172,7 +408,7 @@ body {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.9rem;
   line-height: 1.65;
-  padding: 0.8rem 1rem;
+  padding: 0.75rem 1rem;
   resize: vertical;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
   outline: none;
@@ -185,13 +421,13 @@ body {
 
 .input-field::placeholder { color: var(--text-muted); }
 
-/* ─── Error ────────────────────────────────────────────── */
+/* ─── Error ────────────────────────────────────────────────── */
 .error-banner {
   background: var(--error-bg);
   border: 1px solid var(--error-border);
   border-radius: var(--r-sm);
   color: var(--error);
-  padding: 0.8rem 1rem;
+  padding: 0.75rem 1rem;
   font-size: 0.875rem;
   display: flex;
   align-items: flex-start;
@@ -199,7 +435,7 @@ body {
   line-height: 1.5;
 }
 
-/* ─── Badge ────────────────────────────────────────────── */
+/* ─── Badge ────────────────────────────────────────────────── */
 .step-badge {
   display: inline-flex;
   align-items: center;
@@ -216,7 +452,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ─── Animations ───────────────────────────────────────── */
+/* ─── Animations ───────────────────────────────────────────── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -232,10 +468,6 @@ body {
   100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes progressBar {
-  from { width: 0%; }
-}
-
 .anim-fade-up {
   animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -248,9 +480,154 @@ body {
   animation: checkScale 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
+/* Staggered entrance for left panel */
+.lp-eyebrow  { animation: fadeUp 0.5s 0.05s cubic-bezier(0.22,1,0.36,1) both; }
+.lp-heading  { animation: fadeUp 0.5s 0.12s cubic-bezier(0.22,1,0.36,1) both; }
+.lp-tagline  { animation: fadeUp 0.5s 0.18s cubic-bezier(0.22,1,0.36,1) both; }
+.lp-rule     { animation: fadeUp 0.5s 0.22s cubic-bezier(0.22,1,0.36,1) both; }
+.lp-features { animation: fadeUp 0.5s 0.27s cubic-bezier(0.22,1,0.36,1) both; }
+
+.rp-header   { animation: fadeUp 0.5s 0.1s cubic-bezier(0.22,1,0.36,1) both; }
+.rp-form-wrap { animation: fadeUp 0.5s 0.2s cubic-bezier(0.22,1,0.36,1) both; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Mobile brand header (hidden on desktop) ──────────────── */
+.mobile-brand-header {
+  display: none;
+}
+
+/* Desktop: transparent flex pass-through so rp-form-wrap can still flex-grow */
+.mobile-rp-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ─── Responsive ───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .left-panel {
+    width: 38%;
+    min-width: 280px;
+    padding: 2rem;
+  }
+
+  .right-panel {
+    padding: 2rem 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .split-root {
+    flex-direction: column;
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  /* Hide left panel entirely on mobile */
+  .left-panel {
+    display: none;
+  }
+
+  /* Right panel takes full screen */
+  .right-panel {
+    width: 100%;
+    flex: unset;
+    min-height: 100dvh;
+    padding: 0;
+    overflow-y: visible;
+    background-image: none;
+    background-color: var(--bg);
+  }
+
+  /* Mobile sticky brand header */
+  .mobile-brand-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    background: rgba(254, 253, 251, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    gap: 0.75rem;
+  }
+
+  /* Badge in mobile header — compact, no wrap */
+  .mobile-brand-header .step-badge {
+    font-size: 0.58rem;
+    padding: 0.28rem 0.65rem;
+    white-space: nowrap;
+    letter-spacing: 0.06em;
+  }
+
+  .mobile-brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  /* Mobile content area with padding */
+  .mobile-rp-content {
+    flex: unset;
+    min-height: unset;
+    padding: 1.5rem 1.25rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Hide desktop badge inside rp-header on mobile (badge already in sticky header) */
+  .mobile-rp-content .rp-header .step-badge {
+    display: none;
+  }
+
+  .mobile-rp-content .rp-header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mobile-rp-content .rp-title {
+    font-size: 1.6rem;
+    margin-top: 0;
+  }
+
+  .mobile-rp-content .rp-sub {
+    font-size: 0.83rem;
+    margin-top: 0.3rem;
+  }
+
+  /* Taller textarea on mobile for comfortable input */
+  textarea.input-field {
+    min-height: 260px;
+    resize: vertical;
+  }
+
+  /* Slightly stronger dashed border on drop zone for mobile visibility */
+  .rp-form-wrap {
+    overflow: visible;
+    min-height: unset;
+    flex: unset;
+  }
+
+  .centered-stage {
+    align-items: flex-start;
+    padding-top: 3rem;
   }
 }

@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: resumeboost-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

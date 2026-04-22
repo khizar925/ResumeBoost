@@ -4,6 +4,8 @@ import UploadForm from './components/UploadForm'
 import ProcessingSteps from './components/ProcessingSteps'
 import ResumePreview from './components/ResumePreview'
 
+const API_BASE = import.meta.env.VITE_API_URL || ''
+
 const STAGE = {
   IDLE:      'idle',
   UPLOADING: 'upload',
@@ -112,17 +114,17 @@ export default function App() {
       const formData = new FormData()
       formData.append('resume', file)
       formData.append('jobDescription', jobDescription)
-      const uploadRes = await axios.post('/api/upload', formData, {
+      const uploadRes = await axios.post(`${API_BASE}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       const { resumeText } = uploadRes.data
 
       setStage(STAGE.OPTIMIZING)
-      const optimizeRes = await axios.post('/api/optimize', { resumeText, jobDescription })
+      const optimizeRes = await axios.post(`${API_BASE}/api/optimize`, { resumeText, jobDescription })
       const { optimizedResume } = optimizeRes.data
 
       setStage(STAGE.COMPILING)
-      const compileRes = await axios.post('/api/compile', { optimizedResume }, {
+      const compileRes = await axios.post(`${API_BASE}/api/compile`, { optimizedResume }, {
         responseType: 'blob',
       })
       const url = URL.createObjectURL(new Blob([compileRes.data], { type: 'application/pdf' }))

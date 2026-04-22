@@ -73,15 +73,26 @@ ${jobDescription}
 
 Rewrite the resume following the XYZ method. Return ONLY the JSON object.`;
 
-  const completion = await groq.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
-    temperature: 0.3,
-    response_format: { type: 'json_object' },
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user',   content: userPrompt   },
-    ],
-  });
+  let completion;
+  try {
+    completion = await groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      temperature: 0.3,
+      response_format: { type: 'json_object' },
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user',   content: userPrompt   },
+      ],
+    });
+  } catch (err) {
+    if (err.status === 429) {
+      throw Object.assign(
+        new Error('Our AI is currently overwhelmed with requests. Please wait and try again after some time.'),
+        { status: 503 }
+      );
+    }
+    throw err;
+  }
 
   const rawText = completion.choices[0].message.content.trim();
 
